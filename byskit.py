@@ -27,26 +27,25 @@ class byskit():
             self.circ.ry(theta, i)
 
         self.circ.barrier()
-        self.circ.x(self.ctrl)
 
     def child_init(self):
         self.a = np.arange(0, 2 ** self.n)
-        gates = []
+        self.gates = []
         for i in self.a:
             s = str(np.binary_repr(i, width=self.n))
-            gates.append(s)
+            self.gates.append(s)
 
-        for i in range(2*self.n):
+        for i in range(2**self.n):
             theta = self.calc_theta(self.child[2*i+1], self.child[2*i])
 
-            for index2,item2 in enumerate(gates[i]):
+            for index2,item2 in enumerate(self.gates[i]):
                 print(item2)
                 if int(item2) == 0:
                     self.circ.x(index2)
 
             self.cn_ry(theta)
 
-            for index2,item2 in enumerate(gates[i]):
+            for index2,item2 in enumerate(self.gates[i]):
                 print(item2)
                 if int(item2) == 0:
                     self.circ.x(index2)
@@ -75,38 +74,25 @@ class byskit():
         return 2 * np.arctan(np.sqrt((p1)/(p0)))
 
 
-if __name__=='__main__':
-    from jupyterthemes import jtplot
+#if __name__=='__main__':
+from jupyterthemes import jtplot
 
-    jtplot.style(theme='monokai', context='notebook', ticks=True, grid=False)
+jtplot.style(theme='monokai', context='notebook', ticks=True, grid=False)
 
-    from qiskit.tools.jupyter import *
-    from qiskit import IBMQ
+from qiskit.tools.jupyter import *
+from qiskit import IBMQ
 
-    IBMQ.load_account()
-    # provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
-    provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
-    from qiskit import BasicAer
-    backend = BasicAer.get_backend('unitary_simulator')
+IBMQ.load_account()
+# provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
+provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
+from qiskit import BasicAer
+backend = BasicAer.get_backend('unitary_simulator')
 
-    a0 = 0.2
-    a1 = 0.8
-    b0 = 0.3
-    b1 = 0.7
-    c000 = 0.15
-    c001 = 0.3
-    c010 = 0.4
-    c011 = 0.1
-    c100 = 0.85
-    c101 = 0.7
-    c110 = 0.6
-    c111 = 0.9
+n = 3
+parents = np.random.rand(2*n)
+child = np.random.rand(2**(n+1))
 
-    parents = np.array([a0,a1,b0,b1])
-    child = np.array([c000,c100,c001,c101,c010,c110,c011,c111])
-    n = 2
+b = byskit(provider,backend,n,parents,child)
 
-    b = byskit(provider,backend,n,parents,child)
-
-    print(np.shape(b.parents))
-    print(np.shape(b.child))
+print(np.shape(parents))
+print(np.shape(child))

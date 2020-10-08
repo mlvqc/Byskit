@@ -102,6 +102,8 @@ if __name__=='__main__':
     c110 = 0.6
     c111 = 0.9
 
+
+
     parents = np.array([a0,a1,b0,b1])
     child = np.array([c000,c100,c001,c101,c010,c110,c011,c111])
     n = 2
