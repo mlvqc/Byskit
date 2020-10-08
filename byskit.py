@@ -28,13 +28,15 @@ class byskit():
         self.c.draw(output='mpl')
         plt.show()
 
-        self.n = 5
+        self.n = 6
         self.ctrl = QuantumRegister(self.n, 'ctrl')
         self.anc = QuantumRegister(self.n - 1, 'anc')
         self.tgt = QuantumRegister(1, 'tgt')
-
+        theta = 1
         self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
-        self.cn_ry(self,theta)
+        self.cn_ry(theta)
+        self.circ.draw(output='mpl')
+        plt.show()
 
     #RY gates
     def cn_ry(self,theta):
