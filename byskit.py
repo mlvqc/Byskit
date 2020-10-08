@@ -24,6 +24,7 @@ class byskit():
 
         self.a = np.arange(0, 2 ** self.n)
         gates = []
+        # Producing the possible readout scenarios in strings e.g <001>
         for i in self.a:
             s = str(np.binary_repr(i, width=self.n))
             gates.append(s)
