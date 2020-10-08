@@ -9,32 +9,34 @@ class byskit():
         self.backend = backend
         self.parents = parents
         self.child = child
-        self.nqubits = np.shape(self.parents)[0]+1
-        self.c = QuantumCircuit(self.nqubits)
-
-        for index, item in enumerate(self.parents):
-            theta = self.calc_theta(item[0],item[1])
-            self.c.ry(theta,index)
-
-        self.c.barrier()
-        self.c.x(0)
-        self.c.x(1)
-
-        for index, item in enumerate(self.child):
-            theta = self.calc_theta(item[0],item[1])
-            self.c.cry(theta,[0,1],2)
-
-
-        self.c.draw(output='mpl')
-        plt.show()
-
-        self.n = 6
+        self.n = np.shape(self.parents)[0]
         self.ctrl = QuantumRegister(self.n, 'ctrl')
         self.anc = QuantumRegister(self.n - 1, 'anc')
         self.tgt = QuantumRegister(1, 'tgt')
-        theta = 1
         self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
-        self.cn_ry(theta)
+
+        for index, item in enumerate(self.parents):
+            theta = self.calc_theta(item[0],item[1])
+            self.circ.ry(theta,index)
+
+        self.circ.barrier()
+        self.circ.x([0,1])
+
+        x_gates = [[0,1],[0],[1],[]]
+
+        for index, item in enumerate(self.child):
+            theta = self.calc_theta(item[0],item[1])
+            if len(x_gates[index])>=1:
+                self.circ.x(x_gates[index])
+                self.cn_ry(theta)
+                self.circ.x(x_gates[index])
+                self.circ.barrier()
+            else:
+                self.cn_ry(theta)
+                self.circ.barrier()
+
+
+
         self.circ.draw(output='mpl')
         plt.show()
 
