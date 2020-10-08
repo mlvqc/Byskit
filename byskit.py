@@ -2,6 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from qiskit import *
 
+
+class hardcode_figure5:
+
+    def __init__(self, provider, backend, parents, child):
+
+
+
 # First princinple for two parent nodes and one child
 class byskit():
     def __init__(self, provider, backend, parents, child):
@@ -67,8 +74,8 @@ if __name__=='__main__':
     from qiskit import IBMQ
 
     IBMQ.load_account()
-    # provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
-    provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
+    provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
+    # provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
     from qiskit import BasicAer
     backend = BasicAer.get_backend('unitary_simulator')
     a0 = 0.2
