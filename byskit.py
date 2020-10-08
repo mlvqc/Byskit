@@ -28,11 +28,13 @@ class byskit():
         self.c.draw(output='mpl')
         plt.show()
 
-        qc = QuantumCircuit(self.nqubits+self.nqubits-2)
-        control = [0,1,2,3,4]
-        target = 5
-        theta = 1
-        self.cnry = self.cn_ry(self,qc,target,control, theta)
+        self.n = 5
+        self.ctrl = QuantumRegister(self.n, 'ctrl')
+        self.anc = QuantumRegister(self.n - 1, 'anc')
+        self.tgt = QuantumRegister(1, 'tgt')
+
+        self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
+        self.cn_ry(self,theta)
 
     #RY gates
     def cn_ry(self,theta):
@@ -49,8 +51,6 @@ class byskit():
             self.circ.ccx(self.ctrl[i], self.anc[i - 2], self.anc[i - 1])
         self.circ.ccx(self.ctrl[0], self.ctrl[1], self.anc[0])
 
-        self.circ.draw(output='mpl')
-        plt.show()
 
     def calc_theta(self,p1,p0):
         return 2 * np.arctan(np.sqrt((p1)/(p0)))
