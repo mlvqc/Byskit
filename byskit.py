@@ -37,22 +37,15 @@ class byskit():
 
         for i in range(2**self.n):
             theta = self.calc_theta(self.child[2*i+1], self.child[2*i])
-
-            for index2,item2 in enumerate(self.gates[i]):
-                print(item2)
-                if int(item2) == 0:
-                    self.circ.x(index2)
-
+            self.xgate(self.gates[i])
             self.cn_ry(theta)
-
-            for index2,item2 in enumerate(self.gates[i]):
-                print(item2)
-                if int(item2) == 0:
-                    self.circ.x(index2)
-
+            self.xgate(self.gates[i])
             self.circ.barrier()
 
-
+    def xgate(self,gate):
+        for index, item in enumerate(gate):
+            if int(item) == 0:
+                self.circ.x(index)
 
     #RY gates
     def cn_ry(self,theta):
@@ -89,10 +82,7 @@ from qiskit import BasicAer
 backend = BasicAer.get_backend('unitary_simulator')
 
 n = 3
-parents = np.random.rand(2*n)
+parents = np.random.rand(n*2)
 child = np.random.rand(2**(n+1))
 
 b = byskit(provider,backend,n,parents,child)
-
-print(np.shape(parents))
-print(np.shape(child))
