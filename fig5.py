@@ -22,28 +22,19 @@ class byskit():
         self.circ.barrier()
         self.circ.x([0,1])
 
-        self.a = np.arange(0, 2 ** self.n)
-        gates = []
-        for i in self.a:
-            s = str(np.binary_repr(i, width=self.n))
-            gates.append(s)
+        x_gates = [[0,1],[0],[1],[]]
 
         for index, item in enumerate(self.child):
             theta = self.calc_theta(item[0],item[1])
+            if len(x_gates[index])>=1:
+                self.circ.x(x_gates[index])
+                self.cn_ry(theta)
+                self.circ.x(x_gates[index])
+                self.circ.barrier()
+            else:
+                self.cn_ry(theta)
+                self.circ.barrier()
 
-            for index2,item2 in enumerate(gates[index]):
-                print(item2)
-                if int(item2) == 0:
-                    self.circ.x(index2)
-
-            self.cn_ry(theta)
-
-            for index2,item2 in enumerate(gates[index]):
-                print(item2)
-                if int(item2) == 0:
-                    self.circ.x(index2)
-
-            self.circ.barrier()
 
 
         self.circ.draw(output='mpl')
