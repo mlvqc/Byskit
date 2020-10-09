@@ -2,5 +2,5 @@
 
 A compiler for turning classical Bayesian networks automatically into quantum circuits to run on Qiskit
 
-Development team: [Sebastian Orbell](https://github.com/sebastianorbell), [Joseph Hickie](https://github.com/josephhic) and [Brandon Severin](https://brandonseverin.carrd.co/)
+Development team: [Sebastian Orbell](https://www.linkedin.com/in/sebastian-orbell-57541b193/), [Joseph Hickie](https://www.linkedin.com/in/joseph-hickie/) and [Brandon Severin](https://brandonseverin.carrd.co/)
 
