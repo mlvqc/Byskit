@@ -10,10 +10,9 @@ class byskit():
         self.parents = parents
         self.child = child
         self.n = n
-        self.n_child = np.shape(child)[1]
         self.ctrl = QuantumRegister(self.n, 'ctrl')
         self.anc = QuantumRegister(self.n - 1, 'anc')
-        self.tgt = QuantumRegister(self.n_child, 'tgt')
+        self.tgt = QuantumRegister(1, 'tgt')
         self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
 
         self.parent_init()
@@ -37,10 +36,9 @@ class byskit():
             self.gates.append(s)
 
         for i in range(2**self.n):
+            theta = self.calc_theta(self.child[2*i+1], self.child[2*i])
             self.xgate(self.gates[i])
-            for j in range(np.shape(child)[1]):
-                theta = self.calc_theta(self.child[2 * i + 1,j], self.child[2 * i,j])
-                self.cn_ry(theta,j)
+            self.cn_ry(theta)
             self.xgate(self.gates[i])
             self.circ.barrier()
 
@@ -50,14 +48,14 @@ class byskit():
                 self.circ.x(index)
 
     #RY gates
-    def cn_ry(self,theta,target):
+    def cn_ry(self,theta):
         # compute
         self.circ.ccx(self.ctrl[0], self.ctrl[1], self.anc[0])
         for i in range(2, self.n):
             self.circ.ccx(self.ctrl[i], self.anc[i - 2], self.anc[i - 1])
 
         # copy
-        self.circ.cry(theta,self.anc[self.n - 2], self.tgt[target])
+        self.circ.cry(theta,self.anc[self.n - 2], self.tgt[0])
 
         # uncompute
         for i in range(self.n - 1, 1, -1):
@@ -83,9 +81,8 @@ provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='o
 from qiskit import BasicAer
 backend = BasicAer.get_backend('unitary_simulator')
 
-n_parernt = 2
-n_child = 3
-parents = np.random.rand(n_parernt*2)
-child = np.random.rand(2**(n_parernt+1),n_child)
+n = 3
+parents = np.random.rand(n*2)
+child = np.random.rand(2**(n+1))
 
-b = byskit(provider,backend,n_parernt,parents,child)
+b = byskit(provider,backend,n,parents,child)
