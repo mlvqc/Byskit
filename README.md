@@ -38,7 +38,7 @@ First we start out with the drawing of the classical network. Then to generate t
 
 1. Maps each node to a qubit (this one to one mapping is easy if each node has only two states). 
 2. Maps the marginal/ conditional probabilities of each node to the probability amplitudes associated with qubit states.
-3. Composes CnRY(θ) rotation gates, using ancilla qubits, to achieve the required probability amplitudes.
+3. Composes $C^{n}R_{Y}\theta$ rotation gates, using ancilla qubits, to achieve the required probability amplitudes.
 
 ## Use Cases
 
