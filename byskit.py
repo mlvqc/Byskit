@@ -4,8 +4,7 @@ from qiskit import *
 
 # First princinple for two parent nodes and one child
 class byskit():
-    def __init__(self, provider, backend, parents, child):
-        self.provider = provider
+    def __init__(self, backend, parents, child):
         self.backend = backend
         self.parents = parents
         self.child = child
@@ -69,6 +68,11 @@ class byskit():
         self.circ.draw(output='mpl')
         plt.show()
 
+    def execute_circ(self):
+        self.circ.measure_all()
+        results = execute(self.circ, self.backend, shots=4321)
+        return results
+
 def gen_random_weights(n_parent,n_child):
     p = np.random.rand(n_parent)
     parents = []
@@ -97,5 +101,5 @@ if __name__=='__main__':
     n_child = 3
 
     parents,children = gen_random_weights(n_parent,n_child)
-    b = byskit(provider,backend,parents,children)
+    b = byskit(backend,parents,children)
     b.plot()
