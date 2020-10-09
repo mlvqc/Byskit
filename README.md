@@ -2,7 +2,7 @@
 
 A compiler for automatically turning simple classical Bayesian networks into quantum circuits to run on Qiskit. 
 
-Development team: [Sebastian Orbell](https://www.linkedin.com/in/sebastian-orbell-57541b193/), [Joseph Hickie](https://www.linkedin.com/in/joseph-hickie/) and [Brandon Severin](https://brandonseverin.carrd.co/) from the [Natalia Ares Group](https://www.natalia-ares.com/) at the University of Oxford
+Development team: [Sebastian Orbell](https://www.linkedin.com/in/sebastian-orbell-57541b193/), [Joseph Hickie](https://www.linkedin.com/in/joseph-hickie/) and [Brandon Severin](https://brandonseverin.carrd.co/) from the [Natalia Ares Group](https://www.natalia-ares.com/) at the University of Oxford.
 
 Requirements: [Anaconda Python](https://www.anaconda.com/products/individual), [Qiskit](https://qiskit.org/)
 
@@ -10,7 +10,9 @@ Requirements: [Anaconda Python](https://www.anaconda.com/products/individual), [
 
 > "Would you risk it for a quantum biscuit?"
 
-Byskit plants an initial step towards taking full advantage of the amplitude amplification when running discrete Bayesian networks on a quantum computer. It provides the ability to easily translate a simple classical discrete Bayesian network to its corresponding quantum circuit. Previously these circuits were drawn manually. By ‘simple’ we mean the network has two generations i.e. one set of parents and one set of children. Future iterations could configure quantum circuits for arbitrarily complex Bayesian networks. 
+Byskit plants an initial step towards taking full advantage of the amplitude amplification when running discrete Bayesian networks on a quantum computer. It provides the ability to easily translate a simple classical discrete Bayesian network to its corresponding quantum circuit. Previously these circuits were drawn manually. By ‘simple’ we mean the network has two generations i.e. one set of parents and one set of children. Future iterations could configure quantum circuits for arbitrarily complex Bayesian networks.
+
+To have a play download the code and checkout the "Test notebook.ipynb" Jupyter Notebook.
 
 ## Background 
 
