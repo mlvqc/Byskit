@@ -4,12 +4,12 @@ from qiskit import *
 
 # First princinple for two parent nodes and one child
 class byskit():
-    def __init__(self, provider, backend, n, parents, child):
+    def __init__(self, provider, backend, parents, child):
         self.provider = provider
         self.backend = backend
         self.parents = parents
         self.child = child
-        self.n = n
+        self.n = int(np.shape(parents)[0]/2)
         self.n_child = np.shape(child)[1]
         self.ctrl = QuantumRegister(self.n, 'ctrl')
         self.anc = QuantumRegister(self.n - 1, 'anc')
@@ -18,9 +18,6 @@ class byskit():
 
         self.parent_init()
         self.child_init()
-
-        self.circ.draw(output='mpl')
-        plt.show()
 
     def parent_init(self):
         for i in range(self.n):
@@ -38,7 +35,7 @@ class byskit():
 
         for i in range(2**self.n):
             self.xgate(self.gates[i])
-            for j in range(np.shape(child)[1]):
+            for j in range(self.n_child):
                 theta = self.calc_theta(self.child[2 * i + 1,j], self.child[2 * i,j])
                 self.cn_ry(theta,j)
             self.xgate(self.gates[i])
@@ -68,24 +65,37 @@ class byskit():
     def calc_theta(self,p1,p0):
         return 2 * np.arctan(np.sqrt((p1)/(p0)))
 
+    def plot(self):
+        self.circ.draw(output='mpl')
+        plt.show()
 
-#if __name__=='__main__':
-from jupyterthemes import jtplot
+def gen_random_weights(n_parent,n_child):
+    p = np.random.rand(n_parent)
+    parents = []
+    for i in p:
+        parents.append(i)
+        parents.append(1 - i)
+    parents = np.array(parents)
 
-jtplot.style(theme='monokai', context='notebook', ticks=True, grid=False)
+    child = np.random.rand(2 ** (n_parent + 1), n_child)
+    for i in range(n_child):
+        for j in range(2 ** (n_parent)):
+            child[2 * j + 1, i] = 1 - child[2 * j, i]
 
-from qiskit.tools.jupyter import *
-from qiskit import IBMQ
+    return parents, child
 
-IBMQ.load_account()
-# provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
-provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
-from qiskit import BasicAer
-backend = BasicAer.get_backend('unitary_simulator')
+if __name__=='__main__':
+    from qiskit import IBMQ
 
-n_parernt = 2
-n_child = 3
-parents = np.random.rand(n_parernt*2)
-child = np.random.rand(2**(n_parernt+1),n_child)
+    IBMQ.load_account()
+    # provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
+    provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
+    from qiskit import BasicAer
+    backend = BasicAer.get_backend('unitary_simulator')
 
-b = byskit(provider,backend,n_parernt,parents,child)
+    n_parent = 2
+    n_child = 3
+
+    parents,children = gen_random_weights(n_parent,n_child)
+    b = byskit(provider,backend,parents,children)
+    b.plot()
