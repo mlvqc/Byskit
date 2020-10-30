@@ -73,6 +73,63 @@ class byskit():
         results = execute(self.circ, self.backend, shots=4321)
         return results
 
+    def rejection_sampling(self, evidence, shots=1000, amplitude_amplification=False):
+        # Run job many times to get multiple samples
+        samples_list = []
+        self.n_samples = shots
+
+        if amplitude_amplification==True:
+            pass
+
+        self.circ.measure_all()
+        for i in range(self.n_samples):
+            job = execute(self.circ, backend=self.backend, shots=1)
+            result = list(job.result().get_counts(self.circ).keys())[0]
+            accept = True
+            for e in evidence:
+                if result[evidence[e]['n']]==evidence[e]['state']:
+                    pass
+                else:
+                    accept=False
+            if accept == True:
+                print('Accepted result ', result)
+                samples_list.append(result)
+
+        print()
+        print(self.n_samples, 'samples drawn:', len(samples_list), 'samples accepted,', self.n_samples - len(samples_list),
+              'samples rejected.')
+        print('Percentage of samples rejected: ', 100 * (1 - (len(samples_list) / self.n_samples)), '%')
+
+        return samples_list
+
+
+    def evaluate(self, samples_list, observations):
+        p_o = 0
+        for sample in samples_list:
+            accept = True
+            for o in observations:
+                if sample[observations[o]['n']] == observations[o]['state']:
+                    pass
+                else:
+                    accept = False
+            if accept == True:
+                #print('Observation true given evidence')
+                p_o += 1
+        p_o /= len(samples_list)
+
+        print('Probabilty of observations given evidence = ', p_o)
+
+        return p_o
+
+    def amplitude_amplification(self):
+        pass
+
+    def oracle(self):
+        pass
+
+    def u_gate(self):
+        pass
+
 def gen_random_weights(n_parent,n_child):
     p = np.random.rand(n_parent)
     parents = []
@@ -92,10 +149,11 @@ if __name__=='__main__':
     from qiskit import IBMQ
 
     IBMQ.load_account()
-    # provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
-    provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
-    from qiskit import BasicAer
-    backend = BasicAer.get_backend('unitary_simulator')
+    provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
+    #provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
+    from qiskit import Aer #BasicAer
+    #backend = BasicAer.get_backend('unitary_simulator')
+    backend = Aer.get_backend('qasm_simulator')
 
     n_parent = 2
     n_child = 3
@@ -103,3 +161,22 @@ if __name__=='__main__':
     parents,children = gen_random_weights(n_parent,n_child)
     b = byskit(backend,parents,children)
     b.plot()
+
+    evidence = {
+        'one':{
+            'n':1,
+            'state':'1'
+        }
+    }
+
+
+    sample_list = b.rejection_sampling(evidence)
+
+    observations = {
+        'three':{
+            'n':2,
+            'state':'0'
+        }
+    }
+
+    prob = b.evaluate(sample_list, observations)
