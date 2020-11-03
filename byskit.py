@@ -4,7 +4,7 @@ from qiskit import *
 
 # First princinple for two parent nodes and one child
 class byskit():
-    def __init__(self, backend, parents, child):
+    def __init__(self, backend, parents, child,evd = None):
         self.backend = backend
         self.parents = parents
         self.child = child
@@ -13,7 +13,14 @@ class byskit():
         self.ctrl = QuantumRegister(self.n, 'ctrl')
         self.anc = QuantumRegister(self.n - 1, 'anc')
         self.tgt = QuantumRegister(self.n_child, 'tgt')
-        self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
+        if evd != None:
+            self.evd = QuantumRegister(evd,'evd')
+            self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt, self.evd)
+        else:
+            self.circ = QuantumCircuit(self.ctrl, self.anc, self.tgt)
+
+        #self.c_ctrl = ClassicalRegister(self.n, 'c_ctrl')
+        #self.c_tgt = ClassicalRegister(self.n_child, 'c_tgt')
 
         self.parent_init()
         self.child_init()
@@ -79,9 +86,12 @@ class byskit():
         self.n_samples = shots
 
         if amplitude_amplification==True:
-            pass
+            self.amplitude_amplification(evidence)
 
         self.circ.measure_all()
+
+        #self.circ.measure((self.ctrl, self.tgt),(self.c_ctrl, self.c_tgt))
+
         for i in range(self.n_samples):
             job = execute(self.circ, backend=self.backend, shots=1)
             result = list(job.result().get_counts(self.circ).keys())[0]
@@ -122,7 +132,12 @@ class byskit():
         return p_o
 
     def amplitude_amplification(self):
-        pass
+        grover_op = GroverOperator()
+        for index,e in enumerate(evidence):
+            if evidence[e]['state']=='1':
+                self.circ.x(self.circ.evd[index])
+            self.circ.cz(self.circ.evd[index],self.circ.ctrl[evidence[e]['n']])
+
 
     def oracle(self):
         pass
@@ -131,6 +146,7 @@ class byskit():
         pass
 
 def gen_random_weights(n_parent,n_child):
+    np.random.seed(0)
     p = np.random.rand(n_parent)
     parents = []
     for i in p:
@@ -148,6 +164,7 @@ def gen_random_weights(n_parent,n_child):
 if __name__=='__main__':
     from qiskit import IBMQ
 
+
     IBMQ.load_account()
     provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
     #provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
@@ -158,8 +175,8 @@ if __name__=='__main__':
     n_parent = 2
     n_child = 3
 
-    parents,children = gen_random_weights(n_parent,n_child)
-    b = byskit(backend,parents,children)
+    parents, children = gen_random_weights(n_parent, n_child)
+    b = byskit(backend, parents, children)
     b.plot()
 
     evidence = {
@@ -168,7 +185,6 @@ if __name__=='__main__':
             'state':'1'
         }
     }
-
 
     sample_list = b.rejection_sampling(evidence)
 
