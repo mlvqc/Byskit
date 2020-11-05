@@ -6,6 +6,8 @@ Development team: [Sebastian Orbell](https://www.linkedin.com/in/sebastian-orbel
 
 Requirements: [Anaconda Python](https://www.anaconda.com/products/individual), [Qiskit](https://qiskit.org/)
 
+See more: https://sebastianorbell.github.io/byskit.html
+
 ## Summary
 
 > "Would you risk it for a quantum biscuit?"
