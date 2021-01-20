@@ -115,7 +115,7 @@ class byskit():
         results = execute(self.circ, self.backend, shots=4321)
         return results
 
-    def rejection_sampling(self, evidence, shots=1000, amplitude_amplification=False):
+    def rejection_sampling(self, evidence, shots=5000, amplitude_amplification=False):
         # Run job many times to get multiple samples
         samples_list = []
         self.n_samples = shots
@@ -210,8 +210,6 @@ def gen_random_net(network):
 
 if __name__=='__main__':
     from qiskit import IBMQ
-
-
     IBMQ.load_account()
     #provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
     provider = IBMQ.get_provider(hub='ibm-q-oxford', group='on-boarding', project='on-boarding-proj')
@@ -219,7 +217,7 @@ if __name__=='__main__':
     #backend = BasicAer.get_backend('unitary_simulator')
     backend = Aer.get_backend('qasm_simulator')
 
-    #network = {'root':2,'child-1':2,'child-2':2,'child-3':2}
+    #network = {'root':2,'child-1':3,'child-2':3,'child-3':2}
     network = {'root':2,'child-1':3,'child-2':3}
 
     loaded_net = gen_random_net(network)
@@ -237,7 +235,7 @@ if __name__=='__main__':
         }
     }
     #b.rejection_sampling(evidence,amplitude_amplification=True)
-    sample_list = b.rejection_sampling(evidence)
+    sample_list = b.rejection_sampling(evidence, shots=1000,amplitude_amplification=False)
 
     observations = {
         'one':{
@@ -251,3 +249,42 @@ if __name__=='__main__':
     }
 
     prob = b.evaluate(sample_list, observations)
+
+
+from qiskit import IBMQ
+IBMQ.load_account()
+provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
+
+from qiskit import Aer
+backend = Aer.get_backend('qasm_simulator')
+
+network = {'root':2,'child-1':3,'child-2':3}
+loaded_net = gen_random_net(network)
+b = byskit(backend, network, loaded_net)
+b.plot()
+
+evidence = {
+    'one':{
+        'n':1,
+        'state':'1'
+    },
+    'two':{
+        'n':5,
+        'state':'0'
+    }
+}
+
+sample_list = b.rejection_sampling(evidence, shots=1000, amplitude_amplification=True)
+
+observations = {
+    'one':{
+        'n':2,
+        'state':'0'
+    },
+    'two': {
+        'n': 4,
+        'state': '1'
+    }
+}
+
+prob = b.evaluate(sample_list, observations)
